@@ -14,18 +14,11 @@ spec:
         app.kubernetes.io/name: app-2048-sanjo
     spec:
       containers:
-        - name: course
+        - name: app-2048-sanjo   # (aligned with naming)
           image: 991524241826.dkr.ecr.ap-south-2.amazonaws.com/sanjo-course:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3001
-          resources:
-            requests:
-              cpu: "100m"
-              memory: "128Mi"
-            limits:
-              cpu: "250m"
-              memory: "256Mi"
 
 ---
 apiVersion: v1
@@ -38,7 +31,7 @@ spec:
   selector:
     app.kubernetes.io/name: app-2048-sanjo
   ports:
-    - port: 80
+    - port: 3001          # ✅ match vishnu
       targetPort: 3001
       protocol: TCP
 
@@ -51,7 +44,6 @@ metadata:
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
 spec:
   ingressClassName: alb
   rules:
@@ -63,4 +55,4 @@ spec:
               service:
                 name: service-2048-sanjo
                 port:
-                  number: 3001
+                  number: 3001   # ✅ must match service port
